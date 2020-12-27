@@ -1,0 +1,188 @@
+
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R est un logiciel libre livré sans AUCUNE GARANTIE.
+Vous pouvez le redistribuer sous certaines conditions.
+Tapez 'license()' ou 'licence()' pour plus de détails.
+
+R est un projet collaboratif avec de nombreux contributeurs.
+Tapez 'contributors()' pour plus d'information et
+'citation()' pour la façon de le citer dans les publications.
+
+Tapez 'demo()' pour des démonstrations, 'help()' pour l'aide
+en ligne ou 'help.start()' pour obtenir l'aide au format HTML.
+Tapez 'q()' pour quitter R.
+
+[Sauvegarde de la session précédente restaurée]
+
+> options(error=expression(NULL))
+> ## Copyright (C) 2020 Vincent Goulet
+> ##
+> ## Ce fichier fait partie du projet «Programmer avec R»
+> ## https://gitlab.com/vigou3/programmer-avec-r
+> ##
+> ## Cette création est mise à disposition sous licence
+> ## Attribution-Partage dans les mêmes conditions 4.0
+> ## International de Creative Commons.
+> ## https://creativecommons.org/licenses/by-sa/4.0/
+> 
+> ###
+> ### CRÉATION D'UNE BIBLIOTHÈQUE PERSONNELLE 
+> ###
+> 
+> ## Liste des bibliothèques consultées par R. Votre
+> ## bibliothèque personnelle devrait y apparaitre si vous avez
+> ## suivi la procédure expliquée dans le chapitre.
+> .libPaths()
+[1] "/Users/vincent/R/library"                                      
+[2] "/Library/Frameworks/R.framework/Versions/4.0/Resources/library"
+> 
+> ## Comme alternative à la procédure du chapitre, il est
+> ## possible de créer le répertoire pour la bibliothèque
+> ## personnelle, puis d'inscrire son emplacement dans le
+> ## fichier ~/.Renviron directement depuis R.
+> ##
+> ## Tout d'abord, la commande 'dir.create' crée un répertoire
+> ## dans le système de fichier. Adaptez les chemins d'accès
+> ## selon vos besoins.
+> ##
+> ## Si vous êtes sous macOS, utilisez la commande suivante.
+> dir.create("~/Library/R/library", recursive = TRUE) # macOS
+Warning message:
+In dir.create("~/Library/R/library", recursive = TRUE) :
+  '/Users/vincent/Library/R/library' existe déjà
+> 
+> ## Pour tous les autres systèmes d'exploitation, utilisez
+> ## plutôt la commande suivante.
+> dir.create("~/R/library", recursive = TRUE) # autres OS
+Warning message:
+In dir.create("~/R/library", recursive = TRUE) :
+  '/Users/vincent/R/library' existe déjà
+> 
+> ## Ensuite, la commande 'writeLines' permet d'écrire
+> ## directement dans un fichier. Assurez-vous que le chemin
+> ## d'accès correspond à celui utilisé ci-dessus.
+> ##
+> ## Si vous êtes sous macOS, utilisez la commande suivante.
+> writeLines('R_LIBS_USER="~/Library/R/library"',
++            con = "~/.Renviron")
+> 
+> ## Pour tous les autres systèmes d'exploitation, utilisez
+> ## plutôt la commande suivante.
+> writeLines('R_LIBS_USER="~/R/library"',
++            con = "~/.Renviron")
+> 
+> ###
+> ### SYSTÈME DE BASE
+> ###
+> 
+> ## La fonction 'search' retourne la liste des environnements
+> ## dans lesquels R va chercher un objet (en particulier une
+> ## fonction). '.GlobalEnv' est l'environnement de travail.
+> search()
+[1] ".GlobalEnv"        "package:stats"     "package:graphics" 
+[4] "package:grDevices" "package:utils"     "package:datasets" 
+[7] "package:methods"   "Autoloads"         "package:base"     
+> 
+> ## Liste de tous les packages installés sur votre système.
+> ## Noter que MASS et tools en fant partie. Ce sont des
+> ## paquetages livrés avec R, mais qui ne sont pas chargés par
+> ## défaut.
+> library()
+Packages dans la bibliothèque ‘/Library/Frameworks/R.framework/Versions/4.0/Resources/library’ :
+
+base                    The R Base Package
+boot                    Bootstrap Functions (Originally by Angelo Canty
+                        for S)
+class                   Functions for Classification
+cluster                 "Finding Groups in Data": Cluster Analysis
+                        Extended Rousseeuw et al.
+codetools               Code Analysis Tools for R
+compiler                The R Compiler Package
+datasets                The R Datasets Package
+foreign                 Read Data Stored by 'Minitab', 'S', 'SAS',
+                        'SPSS', 'Stata', 'Systat', 'Weka', 'dBase', ...
+graphics                The R Graphics Package
+grDevices               The R Graphics Devices and Support for Colours
+                        and Fonts
+grid                    The Grid Graphics Package
+KernSmooth              Functions for Kernel Smoothing Supporting Wand
+                        & Jones (1995)
+lattice                 Trellis Graphics for R
+MASS                    Support Functions and Datasets for Venables and
+                        Ripley's MASS
+Matrix                  Sparse and Dense Matrix Classes and Methods
+methods                 Formal Methods and Classes
+mgcv                    Mixed GAM Computation Vehicle with Automatic
+                        Smoothness Estimation
+nlme                    Linear and Nonlinear Mixed Effects Models
+nnet                    Feed-Forward Neural Networks and Multinomial
+                        Log-Linear Models
+parallel                Support for Parallel computation in R
+rpart                   Recursive Partitioning and Regression Trees
+spatial                 Functions for Kriging and Point Pattern
+                        Analysis
+splines                 Regression Spline Functions and Classes
+stats                   The R Stats Package
+stats4                  Statistical Functions using S4 Classes
+survival                Survival Analysis
+tcltk                   Tcl/Tk Interface
+tools                   Tools for Package Development
+utils                   The R Utils Package
+
+Warning message:
+In library() :
+  la bibliothèque ‘/Users/vincent/R/library’ ne contient aucun package
+> 
+> ###
+> ### UTILISATION D'UN PAQUETAGE
+> ###
+> 
+> ## Chargement du package MASS qui contient plusieurs
+> ## fonctions statistiques très utiles.
+> library("MASS")
+> 
+> ###
+> ### INSTALLATION DE PAQUETAGES ADDITIONNELS
+> ###
+> 
+> ## Installation du paquetage actuar depuis un site miroir de
+> ## CRAN sélectionné automatiquement.
+> ##
+> ## Si vous avez configuré une bibliothèque personnelle et
+> ## qu'elle apparait dans le résultat de '.libPaths()',
+> ## ci-dessus, le paquetage sera automatiquement installé dans
+> ## celle-ci.
+> install.packages("actuar", repos = "https://cloud.r-project.org")
+Installation du package dans ‘/Users/vincent/R/library’
+(car ‘lib’ n'est pas spécifié)
+installation de la dépendance ‘expint’
+
+essai de l'URL 'https://cloud.r-project.org/bin/macosx/contrib/4.0/expint_0.1-6.tgz'
+Content type 'application/x-gzip' length 213288 bytes (208 KB)
+==================================================
+downloaded 208 KB
+
+essai de l'URL 'https://cloud.r-project.org/bin/macosx/contrib/4.0/actuar_3.0-0.tgz'
+Content type 'application/x-gzip' length 2122037 bytes (2.0 MB)
+==================================================
+downloaded 2.0 MB
+
+
+Les packages binaires téléchargés sont dans
+	/var/folders/yw/mzfqf1qx4dlfkg7dd4fjrs4m0000gr/T//Rtmp9J0QIG/downloaded_packages
+> 
+> ## Chargement du paquetage dans la session de travail. R
+> ## recherche le paquetage dans toutes les bibliothèques de
+> ## '.libPaths()'.
+> library("actuar")
+
+Attachement du package : ‘actuar’
+
+The following object is masked from ‘package:grDevices’:
+
+    cm
+
+> 

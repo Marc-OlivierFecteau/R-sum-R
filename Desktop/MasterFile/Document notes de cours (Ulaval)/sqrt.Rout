@@ -1,0 +1,65 @@
+
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R est un logiciel libre livré sans AUCUNE GARANTIE.
+Vous pouvez le redistribuer sous certaines conditions.
+Tapez 'license()' ou 'licence()' pour plus de détails.
+
+R est un projet collaboratif avec de nombreux contributeurs.
+Tapez 'contributors()' pour plus d'information et
+'citation()' pour la façon de le citer dans les publications.
+
+Tapez 'demo()' pour des démonstrations, 'help()' pour l'aide
+en ligne ou 'help.start()' pour obtenir l'aide au format HTML.
+Tapez 'q()' pour quitter R.
+
+[Sauvegarde de la session précédente restaurée]
+
+> options(error=expression(NULL))
+> ###
+> ### sqrt(x)
+> ###
+> ##  Calculer la racine carrée d'un nombre.
+> ##
+> ##  Argument
+> ##
+> ##  x: nombre réel positif.
+> ##
+> ##  Valeur
+> ##
+> ##  Nombre y tel que y^2 = x.
+> ##
+> ##  Exemples
+> ##
+> ##  sqrt(9)
+> ##
+> sqrt <- function(x)
++ {
++     ## Vérification de la validité de 'x'.
++     if (x < 0)
++         stop("x doit être un nombre positif")
++ 
++     ## Cas trivial.
++     if (x == 0)
++         return(0)
++ 
++     ## Fonction pour calculer la prochaine approximation selon
++     ## la méthode de Newton. Si 'y' est l'approximation
++     ## actuelle de la racine carrée de 'x', alors la nouvelle
++     ## approximation est '(y + x/y)/2'.
++     improve <- function(guess, x)
++         mean(c(guess, x/guess))
++ 
++     ## Valeur de départ de la procédure itérative.
++     y <- 1
++ 
++     ## Approximations successives.
++     while (abs(y^2 - x) >= 0.001)
++         y <- improve(y, x)
++ 
++     ## Retourner la valeur tel que y^2 - x < 0.001.
++     y
++ }
+> 

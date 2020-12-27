@@ -1,0 +1,528 @@
+
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R est un logiciel libre livré sans AUCUNE GARANTIE.
+Vous pouvez le redistribuer sous certaines conditions.
+Tapez 'license()' ou 'licence()' pour plus de détails.
+
+R est un projet collaboratif avec de nombreux contributeurs.
+Tapez 'contributors()' pour plus d'information et
+'citation()' pour la façon de le citer dans les publications.
+
+Tapez 'demo()' pour des démonstrations, 'help()' pour l'aide
+en ligne ou 'help.start()' pour obtenir l'aide au format HTML.
+Tapez 'q()' pour quitter R.
+
+[Sauvegarde de la session précédente restaurée]
+
+> options(error=expression(NULL))
+> ## Copyright (C) 2020 Vincent Goulet
+> ##
+> ## Ce fichier fait partie du projet «Programmer avec R»
+> ## https://gitlab.com/vigou3/programmer-avec-r
+> ##
+> ## Cette création est mise à disposition sous licence
+> ## Attribution-Partage dans les mêmes conditions 4.0
+> ## International de Creative Commons.
+> ## https://creativecommons.org/licenses/by-sa/4.0/
+> 
+> ## Reprenons d'abord certains des exemples pour la ligne de
+> ## commande Unix effectués sur le fichier chanson.txt.
+> ##
+> ## Pour ce faire, il faut importer le contenu du fichier dans
+> ## R. La fonction 'readLines' lit un fichier et retourne un
+> ## vecteur de chaines de caractères, à raison d'une chaine par
+> ## ligne du fichier.
+> ##
+> ## Vous remarquerez que cela correspond au mode de
+> ## fonctionnement de 'grep', 'sed' et 'awk': une ligne à la
+> ## fois.
+> chanson <- readLines("chanson.txt") # importer le fichier
+> chanson                             # contenu du vecteur
+ [1] "Oh comme il est lourd"                       
+ [2] "Le temps qui s'appelle hier"                 
+ [3] "Prends-le ce diamant"                        
+ [4] "Dans ma tête il est pour toi"                
+ [5] "Je promets, je promets que"                  
+ [6] "la journée qui s'en vient est flambant neuve"
+ [7] ""                                            
+ [8] "Je le connais bien"                          
+ [9] "Le chemin du plus lâche"                     
+[10] "Mes bras désolés"                            
+[11] "Rampent comme des chiens"                    
+[12] "Je promets, je promets que"                  
+[13] "la journée qui s'en vient est flambant neuve"
+[14] ""                                            
+[15] "Même si le mouvement"                        
+[16] "Meurt mieux qu'il ne se charge"              
+[17] "Même si la fatigue"                          
+[18] "Voudrait que tu deviennes"                   
+[19] "Je promets, je promets que"                  
+[20] "la journée qui s'en vient est flambant neuve"
+[21] ""                                            
+[22] "Le vent qui est bon"                         
+[23] "Est le même qui arrache"                     
+[24] "Nous avons l'outil"                          
+[25] "Il manque la manière"                        
+[26] "Je promets, je promets que"                  
+[27] "la journée qui s'en vient est flambant neuve"
+[28] ""                                            
+[29] "Frôle-moi de ton mieux"                      
+[30] "Frôle-moi davantage"                         
+[31] "Gave-moi de ton amour"                       
+[32] "Pour shimmer l'Univers"                      
+[33] "Je promets, je promets que"                  
+[34] "la journée qui s'en vient est flambant neuve"
+[35] ""                                            
+[36] "Et nous l'habiterons avec"                   
+[37] "Nos yeux qui s'habituent à la noirceur"      
+[38] "Et nous l'abîmerons avec"                    
+[39] "Nos plus beaux accidents"                    
+[40] "Je promets, je promets que"                  
+[41] "la journée qui s'en vient est flambant neuve"
+> 
+> ## Effectuons maintenant quelques recherches dans le vecteur
+> ## avec la fonction 'grep' de R. Le résultat est l'indice de
+> ## l'élément du vecteur contenant le motif.
+> grep("temps", chanson)     # vers contenant le mot «temps»
+[1] 2
+> grep("chat", chanson)      # vers contenant le mot «chat»
+integer(0)
+> 
+> ## Pour obtenir le texte de l'élément plutôt que sa position
+> ## dans le vecteur, il faut utiliser 'value = TRUE'.
+> grep("temps", chanson, value = TRUE)
+[1] "Le temps qui s'appelle hier"
+> 
+> ## R utilise par défaut des expressions régulières étendues
+> ## (donc le symbole | est un opérateur d'alternance).
+> grep("amour|mieux", chanson, value = TRUE)
+[1] "Meurt mieux qu'il ne se charge" "Frôle-moi de ton mieux"        
+[3] "Gave-moi de ton amour"         
+> 
+> ## Changeons un peu de jeu de données.
+> ##
+> ## La fonction 'data' retourne la liste des jeux de données
+> ## disponible dans la session R courante. Le résultat est une
+> ## liste de plusieurs éléments.
+> data()
+Data sets in package ‘datasets’:
+
+AirPassengers           Monthly Airline Passenger Numbers 1949-1960
+BJsales                 Sales Data with Leading Indicator
+BJsales.lead (BJsales)
+                        Sales Data with Leading Indicator
+BOD                     Biochemical Oxygen Demand
+CO2                     Carbon Dioxide Uptake in Grass Plants
+ChickWeight             Weight versus age of chicks on different diets
+DNase                   Elisa assay of DNase
+EuStockMarkets          Daily Closing Prices of Major European Stock
+                        Indices, 1991-1998
+Formaldehyde            Determination of Formaldehyde
+HairEyeColor            Hair and Eye Color of Statistics Students
+Harman23.cor            Harman Example 2.3
+Harman74.cor            Harman Example 7.4
+Indometh                Pharmacokinetics of Indomethacin
+InsectSprays            Effectiveness of Insect Sprays
+JohnsonJohnson          Quarterly Earnings per Johnson & Johnson Share
+LakeHuron               Level of Lake Huron 1875-1972
+LifeCycleSavings        Intercountry Life-Cycle Savings Data
+Loblolly                Growth of Loblolly pine trees
+Nile                    Flow of the River Nile
+Orange                  Growth of Orange Trees
+OrchardSprays           Potency of Orchard Sprays
+PlantGrowth             Results from an Experiment on Plant Growth
+Puromycin               Reaction Velocity of an Enzymatic Reaction
+Seatbelts               Road Casualties in Great Britain 1969-84
+Theoph                  Pharmacokinetics of Theophylline
+Titanic                 Survival of passengers on the Titanic
+ToothGrowth             The Effect of Vitamin C on Tooth Growth in
+                        Guinea Pigs
+UCBAdmissions           Student Admissions at UC Berkeley
+UKDriverDeaths          Road Casualties in Great Britain 1969-84
+UKgas                   UK Quarterly Gas Consumption
+USAccDeaths             Accidental Deaths in the US 1973-1978
+USArrests               Violent Crime Rates by US State
+USJudgeRatings          Lawyers' Ratings of State Judges in the US
+                        Superior Court
+USPersonalExpenditure   Personal Expenditure Data
+UScitiesD               Distances Between European Cities and Between
+                        US Cities
+VADeaths                Death Rates in Virginia (1940)
+WWWusage                Internet Usage per Minute
+WorldPhones             The World's Telephones
+ability.cov             Ability and Intelligence Tests
+airmiles                Passenger Miles on Commercial US Airlines,
+                        1937-1960
+airquality              New York Air Quality Measurements
+anscombe                Anscombe's Quartet of 'Identical' Simple Linear
+                        Regressions
+attenu                  The Joyner-Boore Attenuation Data
+attitude                The Chatterjee-Price Attitude Data
+austres                 Quarterly Time Series of the Number of
+                        Australian Residents
+beaver1 (beavers)       Body Temperature Series of Two Beavers
+beaver2 (beavers)       Body Temperature Series of Two Beavers
+cars                    Speed and Stopping Distances of Cars
+chickwts                Chicken Weights by Feed Type
+co2                     Mauna Loa Atmospheric CO2 Concentration
+crimtab                 Student's 3000 Criminals Data
+discoveries             Yearly Numbers of Important Discoveries
+esoph                   Smoking, Alcohol and (O)esophageal Cancer
+euro                    Conversion Rates of Euro Currencies
+euro.cross (euro)       Conversion Rates of Euro Currencies
+eurodist                Distances Between European Cities and Between
+                        US Cities
+faithful                Old Faithful Geyser Data
+fdeaths (UKLungDeaths)
+                        Monthly Deaths from Lung Diseases in the UK
+freeny                  Freeny's Revenue Data
+freeny.x (freeny)       Freeny's Revenue Data
+freeny.y (freeny)       Freeny's Revenue Data
+infert                  Infertility after Spontaneous and Induced
+                        Abortion
+iris                    Edgar Anderson's Iris Data
+iris3                   Edgar Anderson's Iris Data
+islands                 Areas of the World's Major Landmasses
+ldeaths (UKLungDeaths)
+                        Monthly Deaths from Lung Diseases in the UK
+lh                      Luteinizing Hormone in Blood Samples
+longley                 Longley's Economic Regression Data
+lynx                    Annual Canadian Lynx trappings 1821-1934
+mdeaths (UKLungDeaths)
+                        Monthly Deaths from Lung Diseases in the UK
+morley                  Michelson Speed of Light Data
+mtcars                  Motor Trend Car Road Tests
+nhtemp                  Average Yearly Temperatures in New Haven
+nottem                  Average Monthly Temperatures at Nottingham,
+                        1920-1939
+npk                     Classical N, P, K Factorial Experiment
+occupationalStatus      Occupational Status of Fathers and their Sons
+precip                  Annual Precipitation in US Cities
+presidents              Quarterly Approval Ratings of US Presidents
+pressure                Vapor Pressure of Mercury as a Function of
+                        Temperature
+quakes                  Locations of Earthquakes off Fiji
+randu                   Random Numbers from Congruential Generator
+                        RANDU
+rivers                  Lengths of Major North American Rivers
+rock                    Measurements on Petroleum Rock Samples
+sleep                   Student's Sleep Data
+stack.loss (stackloss)
+                        Brownlee's Stack Loss Plant Data
+stack.x (stackloss)     Brownlee's Stack Loss Plant Data
+stackloss               Brownlee's Stack Loss Plant Data
+state.abb (state)       US State Facts and Figures
+state.area (state)      US State Facts and Figures
+state.center (state)    US State Facts and Figures
+state.division (state)
+                        US State Facts and Figures
+state.name (state)      US State Facts and Figures
+state.region (state)    US State Facts and Figures
+state.x77 (state)       US State Facts and Figures
+sunspot.month           Monthly Sunspot Data, from 1749 to "Present"
+sunspot.year            Yearly Sunspot Data, 1700-1988
+sunspots                Monthly Sunspot Numbers, 1749-1983
+swiss                   Swiss Fertility and Socioeconomic Indicators
+                        (1888) Data
+treering                Yearly Treering Data, -6000-1979
+trees                   Diameter, Height and Volume for Black Cherry
+                        Trees
+uspop                   Populations Recorded by the US Census
+volcano                 Topographic Information on Auckland's Maunga
+                        Whau Volcano
+warpbreaks              The Number of Breaks in Yarn during Weaving
+women                   Average Heights and Weights for American Women
+
+
+Use ‘data(package = .packages(all.available = TRUE))’
+to list the data sets in all *available* packages.
+
+> 
+> ## L'expression ci-dessus permet de ne conserver que les noms
+> ## d'objets.
+> (nm <- data()$results[, "Item"])
+  [1] "AirPassengers"          "BJsales"                "BJsales.lead (BJsales)"
+  [4] "BOD"                    "CO2"                    "ChickWeight"           
+  [7] "DNase"                  "EuStockMarkets"         "Formaldehyde"          
+ [10] "HairEyeColor"           "Harman23.cor"           "Harman74.cor"          
+ [13] "Indometh"               "InsectSprays"           "JohnsonJohnson"        
+ [16] "LakeHuron"              "LifeCycleSavings"       "Loblolly"              
+ [19] "Nile"                   "Orange"                 "OrchardSprays"         
+ [22] "PlantGrowth"            "Puromycin"              "Seatbelts"             
+ [25] "Theoph"                 "Titanic"                "ToothGrowth"           
+ [28] "UCBAdmissions"          "UKDriverDeaths"         "UKgas"                 
+ [31] "USAccDeaths"            "USArrests"              "USJudgeRatings"        
+ [34] "USPersonalExpenditure"  "UScitiesD"              "VADeaths"              
+ [37] "WWWusage"               "WorldPhones"            "ability.cov"           
+ [40] "airmiles"               "airquality"             "anscombe"              
+ [43] "attenu"                 "attitude"               "austres"               
+ [46] "beaver1 (beavers)"      "beaver2 (beavers)"      "cars"                  
+ [49] "chickwts"               "co2"                    "crimtab"               
+ [52] "discoveries"            "esoph"                  "euro"                  
+ [55] "euro.cross (euro)"      "eurodist"               "faithful"              
+ [58] "fdeaths (UKLungDeaths)" "freeny"                 "freeny.x (freeny)"     
+ [61] "freeny.y (freeny)"      "infert"                 "iris"                  
+ [64] "iris3"                  "islands"                "ldeaths (UKLungDeaths)"
+ [67] "lh"                     "longley"                "lynx"                  
+ [70] "mdeaths (UKLungDeaths)" "morley"                 "mtcars"                
+ [73] "nhtemp"                 "nottem"                 "npk"                   
+ [76] "occupationalStatus"     "precip"                 "presidents"            
+ [79] "pressure"               "quakes"                 "randu"                 
+ [82] "rivers"                 "rock"                   "sleep"                 
+ [85] "stack.loss (stackloss)" "stack.x (stackloss)"    "stackloss"             
+ [88] "state.abb (state)"      "state.area (state)"     "state.center (state)"  
+ [91] "state.division (state)" "state.name (state)"     "state.region (state)"  
+ [94] "state.x77 (state)"      "sunspot.month"          "sunspot.year"          
+ [97] "sunspots"               "swiss"                  "treering"              
+[100] "trees"                  "uspop"                  "volcano"               
+[103] "warpbreaks"             "women"                 
+> 
+> ## Pour extraire de la liste les objets dont le nom comporte
+> ## un point «.», il faut désactiver le rôle spécial de ce
+> ## caractère dans l'expression régulière à l'aide du caractère
+> ## d'échappement.
+> grep("\.", nm)             # erreur!
+Erreur : '\.' est un code escape non reconnu dans une chaîne de caractères débutant ""\."
+> 
+> ## L'expression ci-dessus cause une erreur parce que R
+> ## interprète le caractère d'échappement à l'intérieur du
+> ## motif.
+> ##
+> ## Il existe deux solutions pour régler ce problème.
+> ##
+> ## La première consiste à doubler le caractère d'échappement.
+> ## Ça devient rapidement pénible s'il y a plusieurs caractères
+> ## à doubler.
+> grep("\\.", nm, value = TRUE)
+ [1] "BJsales.lead (BJsales)" "Harman23.cor"           "Harman74.cor"          
+ [4] "ability.cov"            "euro.cross (euro)"      "freeny.x (freeny)"     
+ [7] "freeny.y (freeny)"      "stack.loss (stackloss)" "stack.x (stackloss)"   
+[10] "state.abb (state)"      "state.area (state)"     "state.center (state)"  
+[13] "state.division (state)" "state.name (state)"     "state.region (state)"  
+[16] "state.x77 (state)"      "sunspot.month"          "sunspot.year"          
+> 
+> ## La seconde est disponible depuis la version 4.0.0 de R. Il
+> ## s'agit des chaines de caractères brutes. En gros, une
+> ## chaine de caractères brute se charge d'ajouter les
+> ## caractères d'échappement aux bons endroits et retourne une
+> ## chaine de caractères standard.
+> ##
+> ## On crée une chaine brute avec 'r"(...)"'.
+> r"(\.)"                    # syntaxe d'une chaine brute
+[1] "\\."
+> r"(g.*\..*\()"             # autre exemple
+[1] "g.*\\..*\\("
+> grep(r"(\.)", nm, value = TRUE) # utilisation dans 'grep'
+ [1] "BJsales.lead (BJsales)" "Harman23.cor"           "Harman74.cor"          
+ [4] "ability.cov"            "euro.cross (euro)"      "freeny.x (freeny)"     
+ [7] "freeny.y (freeny)"      "stack.loss (stackloss)" "stack.x (stackloss)"   
+[10] "state.abb (state)"      "state.area (state)"     "state.center (state)"  
+[13] "state.division (state)" "state.name (state)"     "state.region (state)"  
+[16] "state.x77 (state)"      "sunspot.month"          "sunspot.year"          
+> 
+> ## L'expression suivante identifie les éléments (ou vers) de
+> ## 'chanson' qui débutent par «L» et qui contiennent un «i»
+> ## quelque part dans la chaine. Le résultat est un vecteur des
+> ## positions des éléments qui correspondent au motif.
+> grep("^L.*i", chanson)     # positions des éléments
+[1]  2  9 22
+> 
+> ## La fonction 'regexpr' retourne davantage d'informations sur
+> ## la position et la longueur des appariements du motif dans
+> ## la chaine de caractères.
+> ##
+> ## Le vecteur des résultats contient une valeur positive
+> ## correspondant à la position dans la chaine où débute chacun
+> ## des appariements, ou -1 si la chaine ne correspond pas au
+> ## motif. (Dans notre exemple, les nombres positifs sont tous
+> ## des 1 puisque nous recherchons précisément des appariements
+> ## dès le début de la ligne.)
+> ##
+> ## Le vecteur des résultats est également muni d'un attribut
+> ## qui contient la longueur des appariements.
+> regexpr("^L.*i", chanson)  # plus d'informations
+ [1] -1  1 -1 -1 -1 -1 -1 -1  1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1  1 -1 -1 -1
+[26] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+attr(,"match.length")
+ [1] -1 25 -1 -1 -1 -1 -1 -1  8 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 11 -1 -1 -1
+[26] -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+> 
+> ## À partir des résultats de 'regexpr', il est possible
+> ## d'extraire uniquement les portions de texte qui
+> ## correspondent au motif, un peu comme avec l'option '-o' de
+> ## 'grep'.
+> ##
+> ## Il suffit, pour chaque appariement, d'extraire le texte de
+> ## la chaine à partir de la position initiale de l'appariement
+> ## et pour la longueur de celui-ci.
+> ##
+> ## Ce travail, la fonction 'regmatches' le fait pour nous.
+> regmatches(chanson, regexpr("^L.*i", chanson))
+[1] "Le temps qui s'appelle hi" "Le chemi"                 
+[3] "Le vent qui"              
+> 
+> ## Les fonctions 'sub' et 'gsub' jouent en partie le rôle de
+> ## 'sed' dans R, soit remplacer des chaines de caractères.
+> ##
+> ## La fonction 'sub' remplace uniquement la première
+> ## occurrence dans une chaine de caractères, alors que 'gsub'
+> ## remplace toutes les occurences (comme 'sed' lorsque muni du
+> ## modificateur 'g').
+> sub("Oh", "Ah", chanson)
+ [1] "Ah comme il est lourd"                       
+ [2] "Le temps qui s'appelle hier"                 
+ [3] "Prends-le ce diamant"                        
+ [4] "Dans ma tête il est pour toi"                
+ [5] "Je promets, je promets que"                  
+ [6] "la journée qui s'en vient est flambant neuve"
+ [7] ""                                            
+ [8] "Je le connais bien"                          
+ [9] "Le chemin du plus lâche"                     
+[10] "Mes bras désolés"                            
+[11] "Rampent comme des chiens"                    
+[12] "Je promets, je promets que"                  
+[13] "la journée qui s'en vient est flambant neuve"
+[14] ""                                            
+[15] "Même si le mouvement"                        
+[16] "Meurt mieux qu'il ne se charge"              
+[17] "Même si la fatigue"                          
+[18] "Voudrait que tu deviennes"                   
+[19] "Je promets, je promets que"                  
+[20] "la journée qui s'en vient est flambant neuve"
+[21] ""                                            
+[22] "Le vent qui est bon"                         
+[23] "Est le même qui arrache"                     
+[24] "Nous avons l'outil"                          
+[25] "Il manque la manière"                        
+[26] "Je promets, je promets que"                  
+[27] "la journée qui s'en vient est flambant neuve"
+[28] ""                                            
+[29] "Frôle-moi de ton mieux"                      
+[30] "Frôle-moi davantage"                         
+[31] "Gave-moi de ton amour"                       
+[32] "Pour shimmer l'Univers"                      
+[33] "Je promets, je promets que"                  
+[34] "la journée qui s'en vient est flambant neuve"
+[35] ""                                            
+[36] "Et nous l'habiterons avec"                   
+[37] "Nos yeux qui s'habituent à la noirceur"      
+[38] "Et nous l'abîmerons avec"                    
+[39] "Nos plus beaux accidents"                    
+[40] "Je promets, je promets que"                  
+[41] "la journée qui s'en vient est flambant neuve"
+> sub("promets", "jure", chanson)
+ [1] "Oh comme il est lourd"                       
+ [2] "Le temps qui s'appelle hier"                 
+ [3] "Prends-le ce diamant"                        
+ [4] "Dans ma tête il est pour toi"                
+ [5] "Je jure, je promets que"                     
+ [6] "la journée qui s'en vient est flambant neuve"
+ [7] ""                                            
+ [8] "Je le connais bien"                          
+ [9] "Le chemin du plus lâche"                     
+[10] "Mes bras désolés"                            
+[11] "Rampent comme des chiens"                    
+[12] "Je jure, je promets que"                     
+[13] "la journée qui s'en vient est flambant neuve"
+[14] ""                                            
+[15] "Même si le mouvement"                        
+[16] "Meurt mieux qu'il ne se charge"              
+[17] "Même si la fatigue"                          
+[18] "Voudrait que tu deviennes"                   
+[19] "Je jure, je promets que"                     
+[20] "la journée qui s'en vient est flambant neuve"
+[21] ""                                            
+[22] "Le vent qui est bon"                         
+[23] "Est le même qui arrache"                     
+[24] "Nous avons l'outil"                          
+[25] "Il manque la manière"                        
+[26] "Je jure, je promets que"                     
+[27] "la journée qui s'en vient est flambant neuve"
+[28] ""                                            
+[29] "Frôle-moi de ton mieux"                      
+[30] "Frôle-moi davantage"                         
+[31] "Gave-moi de ton amour"                       
+[32] "Pour shimmer l'Univers"                      
+[33] "Je jure, je promets que"                     
+[34] "la journée qui s'en vient est flambant neuve"
+[35] ""                                            
+[36] "Et nous l'habiterons avec"                   
+[37] "Nos yeux qui s'habituent à la noirceur"      
+[38] "Et nous l'abîmerons avec"                    
+[39] "Nos plus beaux accidents"                    
+[40] "Je jure, je promets que"                     
+[41] "la journée qui s'en vient est flambant neuve"
+> gsub("promets", "jure", chanson)
+ [1] "Oh comme il est lourd"                       
+ [2] "Le temps qui s'appelle hier"                 
+ [3] "Prends-le ce diamant"                        
+ [4] "Dans ma tête il est pour toi"                
+ [5] "Je jure, je jure que"                        
+ [6] "la journée qui s'en vient est flambant neuve"
+ [7] ""                                            
+ [8] "Je le connais bien"                          
+ [9] "Le chemin du plus lâche"                     
+[10] "Mes bras désolés"                            
+[11] "Rampent comme des chiens"                    
+[12] "Je jure, je jure que"                        
+[13] "la journée qui s'en vient est flambant neuve"
+[14] ""                                            
+[15] "Même si le mouvement"                        
+[16] "Meurt mieux qu'il ne se charge"              
+[17] "Même si la fatigue"                          
+[18] "Voudrait que tu deviennes"                   
+[19] "Je jure, je jure que"                        
+[20] "la journée qui s'en vient est flambant neuve"
+[21] ""                                            
+[22] "Le vent qui est bon"                         
+[23] "Est le même qui arrache"                     
+[24] "Nous avons l'outil"                          
+[25] "Il manque la manière"                        
+[26] "Je jure, je jure que"                        
+[27] "la journée qui s'en vient est flambant neuve"
+[28] ""                                            
+[29] "Frôle-moi de ton mieux"                      
+[30] "Frôle-moi davantage"                         
+[31] "Gave-moi de ton amour"                       
+[32] "Pour shimmer l'Univers"                      
+[33] "Je jure, je jure que"                        
+[34] "la journée qui s'en vient est flambant neuve"
+[35] ""                                            
+[36] "Et nous l'habiterons avec"                   
+[37] "Nos yeux qui s'habituent à la noirceur"      
+[38] "Et nous l'abîmerons avec"                    
+[39] "Nos plus beaux accidents"                    
+[40] "Je jure, je jure que"                        
+[41] "la journée qui s'en vient est flambant neuve"
+> 
+> ## Plusieurs autres fonctions de R acceptent des expressions
+> ## régulières en argument.
+> ##
+> ## Par exemple, la fonction 'list.files' permet d'obtenir la
+> ## liste des fichiers (du répertoire de travail par défaut)
+> ## dont le nom correspond à un certain motif.
+> ##
+> ## Les expressions ci-dessous affichent la liste des fichiers
+> ## dont le nom se termine par l'extension ".R".
+> list.files(pattern = "\\.R$")   # avec chaine standard
+ [1] "bases.R"                          "debogage.R"                      
+ [3] "donnees.R"                        "environnement.R"                 
+ [5] "gabarit-documentation-fonction.R" "gabarit-exercices-solutions.R"   
+ [7] "import-export.R"                  "paquetages.R"                    
+ [9] "pratiques-scratch.R"              "pratiques.R"                     
+[11] "presentation.R"                   "sqrt.R"                          
+[13] "Stangle.R"                        "tests-sqrt.R"                    
+[15] "texte.R"                          "tri.R"                           
+> list.files(pattern = r"(\.R$)") # avec chaine brute
+ [1] "bases.R"                          "debogage.R"                      
+ [3] "donnees.R"                        "environnement.R"                 
+ [5] "gabarit-documentation-fonction.R" "gabarit-exercices-solutions.R"   
+ [7] "import-export.R"                  "paquetages.R"                    
+ [9] "pratiques-scratch.R"              "pratiques.R"                     
+[11] "presentation.R"                   "sqrt.R"                          
+[13] "Stangle.R"                        "tests-sqrt.R"                    
+[15] "texte.R"                          "tri.R"                           
+> 

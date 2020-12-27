@@ -1,0 +1,404 @@
+## Copyright (C) 2020 Vincent Goulet
+##
+## Ce fichier fait partie du projet «Programmer avec R»
+## https://gitlab.com/vigou3/programmer-avec-r
+##
+## Cette création est mise à disposition sous licence
+## Attribution-Partage dans les mêmes conditions 4.0
+## International de Creative Commons.
+## https://creativecommons.org/licenses/by-sa/4.0/
+
+###
+### STYLE, PRÉSENTATION, COMMENTAIRES ET DOCUMENTATION 
+###
+
+## Afin d'illustrer l'utilité de bien présenter et de
+## commenter son code, nous allons prendre une fonction dans
+## un état assez pitoyable et l'améliorer graduellement.
+##
+## Bien qu'il existe une fonction 'sqrt' dans R pour calculer
+## la racine carrée d'un nombre, nous allons programmer notre
+## propre version. Elle est basée sur la méthode des
+## approximations successives de Newton dont l'algorithme est
+## le suivant:
+##
+## ALGORITHME Calculer la racine carrée d'un nombre x,
+## c'est-à-dire la valeur y tel que y >= 0 et y^2 = x.
+##
+## 1. Poser y égal à une valeur de départ quelconque.
+## 2. Si |y^2 - x| < e, retourner la valeur y.
+## 3. Poser y <- (y + x/y)/2 et retourner à l'étape 2.
+##
+## La valeur 'e' dans l'algorithme représente la précision de
+## l'approximation. Dans notre mise en oeuvre ci-dessous, nous
+## utiliserons e = 0.001. Quant à la valeur de départ de
+## l'étape 1, nous utiliserons y = 1.
+##
+## Notre mise en oeuvre de l'algorithme est itérative. Elle
+## repose sur l'idée de répéter l'étape 3 «tant que» la
+## condition de l'étape 2 n'est pas remplie. Ceci se traduit
+## en langage informatique en boucle 'while'. Nous n'avons pas
+## encore étudié cette structure de contrôle, mais vous
+## devriez néanmoins pouvoir suivre l'exemple aisément.
+##
+## Dernière chose: notre fonction 'sqrt' fait appel à une
+## seconde fonction interne pour effectuer le calcul de
+## l'étape 3 de l'algorithme.
+
+### PRÉSENTATION DU CODE
+
+## La première version du code ne respecte pas les règles de
+## base d'indentation et d'«aération» du code. Résultat: un
+## fouillis difficile à consulter.
+sqrt<-function(x)
+{if(x<0)   stop("x doit être un nombre positif")
+ improve<-function(guess,x)
+ mean(c(guess,x/guess))
+y<-1
+while(!abs(y^2-x)>=0.001)y<-improve(y, x)
+                   return(y)
+
+## Réviser seulement l'indentation permet déjà d'y voir plus
+## clair. Tous les bons éditeurs de texte pour programmeurs
+## sont capables d'indenter le code pour vous, que ce soit à
+## la volée ou de manière asynchrone.
+##
+## Vous pouvez arriver au résultat ci-dessous avec RStudio en
+## sélectionnant le code ci-dessus et en exécutant l'option du
+## menu Code|Reindent Lines.
+##
+## Dans Emacs, l'indentation se fait automatiquement au fur et
+## à mesure que l'on entre du code ou, autrement, en appuyant
+## sur la touche de tabulation.
+sqrt<-function(x)
+{if(x<0)   stop("x doit être un nombre positif")
+     improve<-function(guess,x)
+         mean(c(guess,x/guess))
+     y<-1
+     while(!abs(y^2-x)>=0.001)y<-improve(y, x)
+     return(y)
+
+## La simple indentation du code nous permet déjà de découvrir
+## un bogue dans le code: il manque une accolade fermante } à
+## la fin de la fonction.
+##
+## Corrigeons déjà le code.
+sqrt<-function(x)
+{if(x<0)   stop("x doit être un nombre positif")
+     improve<-function(guess,x)
+         mean(c(guess,x/guess))
+     y<-1
+     while(!abs(y^2-x)>=0.001)y<-improve(y, x)
+     return(y)
+}
+
+## Les normes usuelles de présentation du code informatique
+## exigent également de placer les accolades ouvrantes et
+## fermantes seules sur leur ligne et d'aérer le code avec des
+## espaces autour des opérateurs et des structures de
+## contrôle, après les virgules, etc. Comme pour du texte
+## normal, les espaces rendent le code plus facile à lire.
+##
+## Dans RStudio, vous pouvez parvenir à la présentation
+## ci-dessous avec la commande du menu Code|Reformat Code.
+sqrt <- function(x)
+{
+    if (x < 0)
+        stop("x doit être un nombre positif")
+    improve <- function(guess, x)
+        mean(c(guess, x/guess))
+    y <- 1
+    while (!abs(y^2 - x) < 0.001)
+        y <- improve(y, x)
+    return(y)
+}
+
+## Je recommande d'ajouter des lignes blanches additionnelles
+## dans le code afin de bien séparer les blocs logiques. Dans
+## le cas présent, ces blocs sont:
+##
+## 1. le test de validité de l'argument;
+## 2. la définition de la fonction interne 'improve';
+## 3. l'affectation de la valeur de départ;
+## 4. les approximations successives;
+## 5. la valeur finale.
+sqrt <- function(x)
+{
+    if (x < 0)
+        stop("x doit être un nombre positif")
+
+    improve <- function(guess, x)
+        mean(c(guess, x/guess))
+
+    y <- 1
+
+    while (!abs(y^2 - x) < 0.001)
+        y <- improve(y, x)
+
+    return(y)
+}
+
+### STYLE
+
+## Il y a quelque chose à redire sur le style de cette
+## fonction? Pourtant, les noms d'objets sont raisonnables, le
+## coeur de la fonction n'est pas inutilement placé dans une
+## clause 'else' après le test de validité de l'argument 'x',
+## le calcul de la nouvelle approximation est placé sous une
+## couche d'abstraction dans une fonction interne...
+##
+## Il reste tout de même trois choses à améliorer.
+##
+## Tout d'abord, nous pouvons traiter séparément le cas
+## trivial où l'argument est égal à 0. Il n'y a aucun calcul à
+## faire dans ce cas et la fonction peut directement retourner
+## la réponse 0.
+##
+## Ensuite, l'expression logique dans la clause 'while' qui
+## utilise une formulation «n'est pas plus petite que 0.001»
+## est inutilement compliquée. De plus, elle repose sur la
+## priorité des opérations: la négation logique a-t-elle bel
+## et bien une priorité plus faible que l'inégalité? Il suffit
+## de réécrire l'expression sous la forme «est plus grand ou
+## égal à 0.001» et tout sera plus clair.
+##
+## Enfin, il y a ce 'return' à la dernière ligne de la
+## fonction. Ça, c'est un gros non en R.
+##
+## Améliorons le style.
+sqrt <- function(x)
+{
+    if (x < 0)
+        stop("x doit être un nombre positif")
+
+    if (x == 0)
+        return(0)
+
+    improve <- function(guess, x)
+        mean(c(guess, x/guess))
+
+    y <- 1
+
+    while (abs(y^2 - x) >= 0.001)
+        y <- improve(y, x)
+
+    y
+}
+
+### COMMENTAIRES ET DOCUMENTATION
+
+## Dernier élément manquant dans notre code: les commentaires
+## et la documentation.
+
+###
+### sqrt(x)
+###
+##  Calculer la racine carrée d'un nombre.
+##
+##  Argument
+##
+##  x: nombre réel positif.
+##
+##  Valeur
+##
+##  Nombre y tel que y^2 = x.
+##
+##  Exemples
+##
+##  sqrt(9)
+##
+sqrt <- function(x)
+{
+    ## Vérification de la validité de 'x'.
+    if (x < 0)
+        stop("x doit être un nombre positif")
+
+    ## Cas trivial.
+    if (x == 0)
+        return(0)
+
+    ## Fonction pour calculer la prochaine approximation selon
+    ## la méthode de Newton. Si 'y' est l'approximation
+    ## actuelle de la racine carrée de 'x', alors la nouvelle
+    ## approximation est '(y + x/y)/2'.
+    improve <- function(guess, x)
+        mean(c(guess, x/guess))
+
+    ## Valeur de départ de la procédure itérative.
+    y <- 1
+
+    ## Approximations successives.
+    while (abs(y^2 - x) >= 0.001)
+        y <- improve(y, x)
+
+    ## Retourner la valeur tel que y^2 - x < 0.001.
+    y
+}
+
+###
+### TESTS UNITAIRES  
+###
+
+## FONCTIONS UTILES
+
+## La fonction 'source' permet d'évaluer intégralemnent un
+## fichier de script. C'est l'équivalent, en une commande,
+## d'évaluer un fichier ligne par ligne de manière
+## interactive. La fonction est particulièrement utile pour
+## définir rapidement des fonctions dans un espace de travail
+## ou pour exécuter des tests unitaires.
+##
+## Le fichier 'sqrt.R' contient le code et la documentation de
+## la fonction 'sqrt' ci-dessus. Nous pouvons définir la
+## fonction dans l'espace de travail rapidement avec
+## l'expression suivante.
+source("sqrt.R")
+
+## La fonction 'stopifnot' permet de générer une erreur dès
+## qu'une des expressions en argument n'est pas vraie.
+##
+## Vous pouvez l'utiliser dans vos fonctions lorsqu'il y a
+## plusieurs tests de validité des arguments, mais elle sert
+## surtout pour les tests unitaires.
+stopifnot(1 == 2)                       # erreur
+stopifnot(1 < 2)                        # pas d'erreur
+
+## Pour tester plusieurs expressions à la fois dans
+## 'stopifnot', deux options. La première, les séparer par des
+## virgules, possiblement sur plusieurs lignes.
+stopifnot(1 < 2, 2 == 2, "a" < "b")
+stopifnot(1 < 2,
+          2 == 2,
+          "a" < "b")
+
+## L'autre option permet d'éviter les virgules, ce qui est
+## plus pratique pour l'évaluation interactive ligne par
+## ligne. Il s'agit de regrouper les expressions entre
+## accolades «{ }» et de les séparer les unes des autres par
+## un retour à la ligne.
+stopifnot({
+    1 < 2
+    2 == 2
+    "a" < "b"
+})
+
+## Les fonctions 'assertError' et 'assertWarning' font partie
+## de la distribution R de base, mais elles se trouvent dans
+## le paquetage 'tools' qui n'est pas chargé par défaut. Les
+## appeler sous la forme 'tools::assertError' et
+## 'tools::asserWarning' permet d'éviter de devoir charger le
+## paquetage en mémoire.
+##
+## Attention avec 'assertError': pour cette fonction le
+## comportement correct de l'expression en argument consiste
+## à... retourner une erreur! (C'est ce que l'on veut tester.)
+TRUE <- 3                     # erreur
+tools::assertError(TRUE <- 3) # ok!
+T <- 3                        # valide
+tools::assertError(T <- 3)    # erreur: pas d'erreur!
+
+## Similaire pour 'assertWarning'.
+1:4 + 1:3                       # avertissement
+tools::assertWarning(1:4 + 1:3) # ok!
+1:4 + 1:2                       # valide
+tools::assertWarning(1:4 + 1:2) # erreur: pas d'avertissement!
+
+## La fonction 'all.equal' est extrêmement importante pour
+## vérifier l'égalité ou, plutôt, la presque égalité de deux
+## nombres en virgule flottante dans R.
+##
+## Ne vérifiez JAMAIS l'égalité de deux nombres obtenus à
+## partir de calculs avec '==' (à moins d'avoir la certitude
+## que les calculs n'impliquent que des entiers).
+1.2 + 1.4 + 2.8                 # 5.4
+1.2 + 1.4 + 2.8 == 5.4          # non?!?
+5.4 - (1.2 + 1.4 + 2.8)         # petit écart
+all.equal(1.2 + 1.4 + 2.8, 5.4) # ok
+
+## Vous pouvez utiliser '==' pour les chaines de caractères,
+## mais n'oubliez pas que la comparaison se fait élément par
+## élément.
+letters[1:3] == c("a", "b", "c")
+
+## La fonction 'identical', comme son nom l'indique, vérifie
+## que deux objets sont rigoureusement identiques.
+identical(letters[1:3], c("a", "b", "c"))
+identical(42, 40 + 2)
+
+## Une différence dans le type d'objet, les attributs ou la
+## classe et le résultat est FALSE.
+(x <- 42)                  # nombre réel en double précision
+str(x)                     # confirmation
+(y <- as.integer(42))      # véritable entier
+str(y)                     # confirmation
+x == y                     # visuellement pareils et égaux...
+identical(x, y)            # ... mais pas identiques
+
+(x <- c(a = 2))            # nombre étiqueté
+(y <- c(b = 2))            # idem
+x == y                     # nombres égaux...
+identical(x, y)            # ... mais objets non identiques
+
+## TESTS
+
+## Nous avons maintenant tout en main pour rédiger des tests
+## unitaires.
+##
+## À titre d'exemple, nous allons composer les tests pour la
+## fonction 'sqrt' ci-dessus (ou qui se trouve dans le fichier
+## d'accompagnement 'sqrt.R').
+##
+## La fonction n'est PAS vectorielle. Nous n'avons donc pas à
+## tester sa validité avec un vecteur de nombres de longueur
+## supérieure à 1.
+##
+## Premier test: la fonction retourne une erreur pour un
+## argument strictement négatif.
+tools::assertError(sqrt(-1))
+
+## Deuxième test: la fonction retourne un véritable 0 pour un
+## argument nul.
+stopifnot(identical(0, sqrt(0)))
+
+## Troisième test: le carré de la réponse est
+## (approximativement) égal à l'argument.
+##
+## Dans cet exemple précis, la précision de la fonction 'sqrt'
+## est limitée à 0,001. Nous devons donc fournir une tolérance
+## à 'all.equal'. Prenez note que ce n'est généralement pas
+## nécessaire.
+stopifnot(all.equal(3, sqrt(3)^2,
+                    tolerance = 0.001))
+
+## Nous pouvons aussi regrouper les trois tests en un seul
+## appel à 'stopifnot'.
+stopifnot({
+    tools::assertError(sqrt(-1))
+    identical(0, sqrt(0))
+    all.equal(3, sqrt(3)^2,
+              tolerance = 0.001)
+})
+
+## Comme les tests ci-dessus sont rapides à évaluer, nous
+## aurions pu les placer directement dans le fichier 'sqrt.R'.
+## Ainsi, 'source("sqrt.R")' permet à la fois de définir la
+## fonction et de vérifier sa validité. C'est suffisant pour
+## les petits projets ou les fonctions seules.
+##
+## De manière plus générale, je vous recommande de placer les
+## tests dans des fichiers de script séparés.
+##
+## Le fichier de script 'tests-sqrt.R' distribué avec
+## l'ouvrage reprend les tests ci-dessus.
+##
+## Vous pouvez ensuite définir la fonction et évaluer les
+## tests avec les expressions suivantes.
+source("sqrt.R")           # définition de la fonction
+source("tests-sqrt.R")     # exécution des tests
+
+### NETTOYAGE
+
+## La fonction 'sqrt' ci-dessus masque la fonction interne de
+## R. Question d'éviter les éventuels problèmes, effaçons
+## notre fonction moins performante.
+rm("sqrt")
